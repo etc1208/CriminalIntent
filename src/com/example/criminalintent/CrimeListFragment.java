@@ -1,7 +1,9 @@
 package com.example.criminalintent;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 
 public class CrimeListFragment extends ListFragment {
 
+	private static final int REQUEST_CRIME = 1;
 	private static final String TAG = "CrimeListFragment";
 	private ArrayList<Crime> crimes;
 	
@@ -34,9 +37,25 @@ public class CrimeListFragment extends ListFragment {
 		super.onListItemClick(l, v, position, id);
 		//Crime c = ((Crime) getListAdapter()).getItem(position);
 		Crime c = ((CrimeAdapter) getListAdapter()).getItem(position);
-		Log.d(TAG, c.getTitle());
+		//Log.d(TAG, c.getTitle());
+		Intent intent = new Intent(getActivity(), CrimeActivity.class);
+		intent.putExtra(CrimeFragment.EXTRA_CRIME_ID, c.getId());
+		startActivityForResult(intent, REQUEST_CRIME);
 	}
 	
+	
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == REQUEST_CRIME) {
+			
+		}
+	}
+
+	public void returnResult() {
+		getActivity().setResult(REQUEST_CRIME, null);
+	}
+
 	private class CrimeAdapter extends ArrayAdapter<Crime> {
 		public CrimeAdapter(ArrayList<Crime> crimes) {
 			super(getActivity(), 0, crimes);
@@ -57,8 +76,12 @@ public class CrimeListFragment extends ListFragment {
 			
 			return convertView;
 		}
-		
-		
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		((CrimeAdapter)getListAdapter()).notifyDataSetChanged();
 	}
 	
 }
